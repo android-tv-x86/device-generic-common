@@ -69,7 +69,6 @@ SUPERUSER_PACKAGE_PREFIX := com.android.settings.cyanogenmod.superuser
 BOARD_WPA_SUPPLICANT_DRIVER ?= NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB ?= private_lib_driver_cmd
 WPA_SUPPLICANT_VERSION ?= VER_2_1_DEVEL
-WIFI_DRIVER_MODULE_PATH ?= auto
 
 BOARD_GPU_DRIVERS ?= i915 i965 nouveau r300g r600g radeonsi swrast virgl vmwgfx
 ifneq ($(strip $(BOARD_GPU_DRIVERS)),)
