@@ -63,12 +63,10 @@ BOARD_EGL_WORKAROUND_BUG_10194508 := true
 
 USE_CAMERA_STUB ?= false
 
-SUPERUSER_EMBEDDED := true
-SUPERUSER_PACKAGE_PREFIX := com.android.settings.cyanogenmod.superuser
-
 # This enables the wpa wireless driver
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
 WPA_SUPPLICANT_VERSION := VER_2_1_DEVEL
+WIFI_DRIVER_MODULE_NAME := brcmfmac
 
 BOARD_GPU_DRIVERS ?= i915 i965 nouveau r300g r600g radeonsi swrast virgl vmwgfx
 ifneq ($(strip $(BOARD_GPU_DRIVERS)),)
@@ -76,4 +74,4 @@ TARGET_HARDWARE_3D := true
 BOARD_EGL_CFG ?= device/generic/common/gpu/egl_mesa.cfg
 endif
 
-BOARD_KERNEL_CMDLINE := root=/dev/ram0 androidboot.hardware=$(TARGET_PRODUCT)
+BOARD_KERNEL_CMDLINE := root=/dev/ram0 androidboot.hardware=$(PRODUCT_RELEASE_NAME)

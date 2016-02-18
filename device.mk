@@ -30,11 +30,11 @@ PRODUCT_COPY_FILES := \
     $(if $(wildcard $(PRODUCT_DIR)init.rc),$(PRODUCT_DIR)init.rc:root/init.rc) \
     $(if $(wildcard $(PRODUCT_DIR)init.sh),$(PRODUCT_DIR),$(LOCAL_PATH)/)init.sh:system/etc/init.sh \
     $(if $(wildcard $(PRODUCT_DIR)modules.blacklist),$(PRODUCT_DIR),$(LOCAL_PATH)/)modules.blacklist:system/etc/modules.blacklist \
-    $(if $(wildcard $(PRODUCT_DIR)fstab.$(TARGET_PRODUCT)),$(PRODUCT_DIR)fstab.$(TARGET_PRODUCT),$(LOCAL_PATH)/fstab.x86):root/fstab.$(TARGET_PRODUCT) \
+    $(if $(wildcard $(PRODUCT_DIR)fstab.$(PRODUCT_RELEASE_NAME)),$(PRODUCT_DIR)fstab.$(PRODUCT_RELEASE_NAME),$(LOCAL_PATH)/fstab.x86):root/fstab.$(PRODUCT_RELEASE_NAME) \
     $(if $(wildcard $(PRODUCT_DIR)wpa_supplicant.conf),$(PRODUCT_DIR),$(LOCAL_PATH)/)wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
     $(if $(wildcard $(PRODUCT_DIR)excluded-input-devices.xml),$(PRODUCT_DIR),$(LOCAL_PATH)/)excluded-input-devices.xml:system/etc/excluded-input-devices.xml \
-    $(if $(wildcard $(PRODUCT_DIR)init.$(TARGET_PRODUCT).rc),$(PRODUCT_DIR)init.$(TARGET_PRODUCT).rc,$(LOCAL_PATH)/init.x86.rc):root/init.$(TARGET_PRODUCT).rc \
-    $(if $(wildcard $(PRODUCT_DIR)ueventd.$(TARGET_PRODUCT).rc),$(PRODUCT_DIR)ueventd.$(TARGET_PRODUCT).rc,$(LOCAL_PATH)/ueventd.x86.rc):root/ueventd.$(TARGET_PRODUCT).rc \
+    $(if $(wildcard $(PRODUCT_DIR)init.$(PRODUCT_RELEASE_NAME).rc),$(PRODUCT_DIR)init.$(PRODUCT_RELEASE_NAME).rc,$(LOCAL_PATH)/init.x86.rc):root/init.$(PRODUCT_RELEASE_NAME).rc \
+    $(if $(wildcard $(PRODUCT_DIR)ueventd.$(PRODUCT_RELEASE_NAME).rc),$(PRODUCT_DIR)ueventd.$(PRODUCT_RELEASE_NAME).rc,$(LOCAL_PATH)/ueventd.x86.rc):root/ueventd.$(PRODUCT_RELEASE_NAME).rc \
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/ppp/ip-up:system/etc/ppp/ip-up \

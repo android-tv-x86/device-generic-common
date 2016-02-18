@@ -16,7 +16,7 @@
 
 # Common packages for Android-x86 platform.
 
-PRODUCT_PACKAGES += \
+PRODUCT_PACKAGES := \
     Development \
     RSSReader \
     camera.x86 \
