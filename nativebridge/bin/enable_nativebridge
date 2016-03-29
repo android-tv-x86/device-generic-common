@@ -25,7 +25,7 @@ else
 		else
 			url=http://goo.gl/n6KtQa
 		fi
-		wget $url -cO houdini$1.sfs && continue
+		busybox wget $url -cO houdini$1.sfs && continue
 		rm -f houdini$1.sfs
 		sleep 30
 	done
