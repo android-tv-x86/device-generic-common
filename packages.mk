@@ -54,8 +54,10 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_PACKAGES += \
     badblocks \
+    fsck.f2fs \
     mke2fs \
     mkfs.exfat \
+    mkfs.f2fs \
     mkntfs \
     mount.exfat \
     ntfs-3g \
