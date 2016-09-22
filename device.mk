@@ -19,6 +19,7 @@ PRODUCT_DIR := $(dir $(lastword $(filter-out device/common/%,$(filter device/%,$
 PRODUCT_PROPERTY_OVERRIDES := \
     ro.ril.hsxpa=1 \
     ro.ril.gprsclass=10 \
+    ro.sf.lcd_density=160 \
     keyguard.no_require_sim=true \
     ro.com.android.dataroaming=true
 
