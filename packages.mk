@@ -64,6 +64,11 @@ PRODUCT_PACKAGES += \
     ntfsfix \
     tune2fs \
 
+PRODUCT_PACKAGES += \
+    btattach \
+    hciconfig \
+    hcitool \
+
 # Third party apps
 PRODUCT_PACKAGES += \
     Eleven \
