@@ -76,6 +76,10 @@ PRODUCT_TAGS += dalvik.gc.type-precise
 
 PRODUCT_CHARACTERISTICS := tablet
 
+# Boot animation
+TARGET_SCREEN_WIDTH := 1024
+TARGET_SCREEN_HEIGHT := 768
+
 PRODUCT_AAPT_CONFIG := normal large xlarge mdpi hdpi
 PRODUCT_AAPT_PREF_CONFIG := mdpi
 
