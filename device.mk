@@ -80,6 +80,8 @@ PRODUCT_TAGS += dalvik.gc.type-precise
 
 PRODUCT_CHARACTERISTICS := tablet
 
+WITH_SU := true
+
 # Boot animation
 TARGET_SCREEN_WIDTH := 1024
 TARGET_SCREEN_HEIGHT := 768
