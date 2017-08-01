@@ -72,10 +72,9 @@ WIFI_DRIVER_MODULE_NAME := brcmfmac
 BOARD_GPU_DRIVERS ?= i915 i965 nouveau r300g r600g radeonsi swrast virgl vmwgfx
 ifneq ($(strip $(BOARD_GPU_DRIVERS)),)
 TARGET_HARDWARE_3D := true
-BOARD_EGL_CFG ?= device/generic/common/gpu/egl_mesa.cfg
 endif
 
-BOARD_KERNEL_CMDLINE := root=/dev/ram0 androidboot.selinux=permissive
+BOARD_KERNEL_CMDLINE := root=/dev/ram0 androidboot.selinux=permissive $(if $(filter true,$(TARGET_USES_64_BIT_BINDER)),,vmalloc=192M)
 TARGET_KERNEL_DIFFCONFIG := device/generic/common/selinux_diffconfig
 
 COMPATIBILITY_ENHANCEMENT_PACKAGE := true

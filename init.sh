@@ -33,7 +33,7 @@ function init_hal_audio()
 			;;
 	esac
 
-	if [ "`cat /proc/asound/card0/id`" = "IntelHDMI" ]; then
+	if grep -qi "IntelHDMI" /proc/asound/card0/id; then
 		[ -d /proc/asound/card1 ] || set_property ro.hardware.audio.primary hdmi
 	fi
 }
@@ -49,6 +49,7 @@ function init_hal_bluetooth()
 		T10*TA|HP*Omni*)
 			BTUART_PORT=/dev/ttyS1
 			set_property hal.bluetooth.uart.proto bcm
+			[ -z "$(getprop sleep.state)" ] && set_property sleep.state none
 			;;
 		MacBookPro8*)
 			rmmod b43
@@ -77,6 +78,16 @@ function init_hal_bluetooth()
 		chown bluetooth.bluetooth $BTUART_PORT
 		start btattach
 	fi
+
+	# rtl8723bs bluetooth
+	if dmesg -t | grep -qE '8723bs.*BT'; then
+		TTYSTRING=`dmesg -t | grep -E 'tty.*MMIO' | awk '{print $2}' | head -1`
+		if [ -n "$TTYSTRING" ]; then
+			echo "RTL8723BS BT uses $TTYSTRING for Bluetooth."
+			ln -sf $TTYSTRING /dev/rtk_h5
+			start rtk_hciattach
+		fi
+	fi
 }
 
 function init_hal_camera()
@@ -95,6 +106,9 @@ function set_drm_mode()
 	case "$PRODUCT" in
 		ET1602*)
 			drm_mode=1366x768
+			;;
+		VMware*)
+			[ -n "$video" ] && drm_mode=$video
 			;;
 		*)
 			;;
@@ -121,9 +135,10 @@ function init_hal_gralloc()
 {
 	case "$(cat /proc/fb | head -1)" in
 		*virtiodrmfb)
-#			set_property ro.hardware.hwcomposer drm
-			;&
-		0*inteldrmfb|0*radeondrmfb|0*nouveaufb|0*svgadrmfb)
+			set_property ro.hardware.hwcomposer drm
+			set_property ro.hardware.gralloc gbm
+			;;
+		0*inteldrmfb|0*radeondrmfb|0*nouveaufb|0*svgadrmfb|0*amdgpudrmfb)
 			set_property ro.hardware.gralloc drm
 			set_drm_mode
 			;;
@@ -236,7 +251,7 @@ function init_hal_sensors()
 			set_property hal.sensors.iio.accel.matrix 0,1,0,1,0,0,0,0,-1
 			;;
 		*)
-			has_sensors=false
+			#has_sensors=false
 			;;
 	esac
 
@@ -343,10 +358,7 @@ function do_bootcomplete()
 
 	[ -z "$(getprop persist.sys.root_access)" ] && setprop persist.sys.root_access 3
 
-	# FIXME: autosleep works better on i965?
-	[ "$(getprop debug.mesa.driver)" = "i965" ] && setprop debug.autosleep 1
-
-	lsmod | grep -e brcmfmac && setprop wlan.no-unload-driver 1
+	lsmod | grep -Ehq "brcmfmac|rtl8723be" && setprop wlan.no-unload-driver 1
 
 	case "$PRODUCT" in
 		1866???|1867???|1869???) # ThinkPad X41 Tablet
