@@ -6,17 +6,18 @@ houdini_bin=0
 dest_dir=/system/lib$1/arm$1
 binfmt_misc_dir=/proc/sys/fs/binfmt_misc
 
-cd /data/arm
 if [ -e /system/lib$1/libhoudini.so ]; then
 	log -pi -thoudini "found /system/lib$1/libhoudini.so"
 elif [ -e /system/etc/houdini$1.sfs ]; then
-	busybox mount /system/etc/houdini$1.sfs $dest_dir
+	mount /system/etc/houdini$1.sfs $dest_dir
 else
 	if mountpoint -q $dest_dir; then
 		kill -9 `fuser -m $dest_dir`
 		umount -f $dest_dir
 	fi
-	while ! busybox mount houdini$1.sfs $dest_dir; do
+	mkdir -p /data/arm
+	cd /data/arm
+	while ! mount houdini$1.sfs $dest_dir; do
 		while [ "$(getprop net.dns1)" = "" ]; do
 			sleep 10
 		done
@@ -31,10 +32,6 @@ else
 	done
 fi
 
-
-# if you don't see the files 'register' and 'status' in /proc/sys/fs/binfmt_misc
-# then run the following command:
-# mount -t binfmt_misc none /proc/sys/fs/binfmt_misc
 
 # this is to add the supported binary formats via binfmt_misc
 
