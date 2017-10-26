@@ -21,6 +21,10 @@ function init_misc()
 
 	# in case no cpu governor driver autoloads
 	[ -d /sys/devices/system/cpu/cpu0/cpufreq ] || modprobe acpi-cpufreq
+
+	# enable sdcardfs if /data is not mounted on tmpfs or 9p
+	mount | grep /data\ | grep -qE 'tmpfs|9p'
+	[ $? -ne 0 ] && modprobe sdcardfs
 }
 
 function init_hal_audio()
@@ -127,20 +131,23 @@ function init_uvesafb()
 			;;
 	esac
 
-	[ "$HWACCEL" = "0" ] && bpp=16 || bpp=32
-	modprobe uvesafb mode_option=${UVESA_MODE:-1024x768}-$bpp ${UVESA_OPTION:-mtrr=3 scroll=redraw}
+	modprobe uvesafb mode_option=${UVESA_MODE:-1024x768}-32 ${UVESA_OPTION:-mtrr=3 scroll=redraw}
 }
 
 function init_hal_gralloc()
 {
 	case "$(cat /proc/fb | head -1)" in
 		*virtiodrmfb)
-			set_property ro.hardware.hwcomposer drm
-			set_property ro.hardware.gralloc gbm
+			if [ "$HWACCEL" != "0" ]; then
+				set_property ro.hardware.hwcomposer drm
+				set_property ro.hardware.gralloc gbm
+			fi
 			;;
 		0*inteldrmfb|0*radeondrmfb|0*nouveaufb|0*svgadrmfb|0*amdgpudrmfb)
-			set_property ro.hardware.gralloc drm
-			set_drm_mode
+			if [ "$HWACCEL" != "0" ]; then
+				set_property ro.hardware.gralloc drm
+				set_drm_mode
+			fi
 			;;
 		"")
 			init_uvesafb
@@ -251,7 +258,7 @@ function init_hal_sensors()
 			set_property hal.sensors.iio.accel.matrix 0,1,0,1,0,0,0,0,-1
 			;;
 		*)
-			#has_sensors=false
+			has_sensors=false
 			;;
 	esac
 
@@ -412,6 +419,7 @@ function do_bootcomplete()
 			alsa_amixer -c $c set Capture cap
 			alsa_amixer -c $c set PCM 100 unmute
 			alsa_amixer -c $c set SPO unmute
+			alsa_amixer -c $c set IEC958 on
 			alsa_amixer -c $c set 'Mic Boost' 3
 			alsa_amixer -c $c set 'Internal Mic Boost' 3
 		fi
@@ -435,9 +443,6 @@ for c in `cat /proc/cmdline`; do
 			eval $c
 			if [ -z "$1" ]; then
 				case $c in
-					HWACCEL=*)
-						set_property debug.egl.hw $HWACCEL
-						;;
 					DEBUG=*)
 						[ -n "$DEBUG" ] && set_property debug.logcat 1
 						;;
