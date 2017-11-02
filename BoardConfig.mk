@@ -18,8 +18,8 @@ BOARD_MALLOC_ALIGNMENT := 16
 # Enable dex-preoptimization to speed up the first boot sequence
 # of an SDK AVD. Note that this operation only works on Linux for now
 ifeq ($(HOST_OS),linux)
-WITH_DEXPREOPT := true
-WITH_DEXPREOPT_PIC := true
+WITH_DEXPREOPT := false
+WITH_DEXPREOPT_PIC := false
 endif
 
 # the following variables could be overridden
