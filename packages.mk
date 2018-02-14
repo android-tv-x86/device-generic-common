@@ -36,7 +36,6 @@ PRODUCT_PACKAGES := \
     power.x86 \
     rtk_hciattach \
     scp \
-    sensors.hsb \
     sftp \
     ssh \
     sshd \
@@ -80,3 +79,4 @@ PRODUCT_PACKAGES += \
 # Third party apps
 PRODUCT_PACKAGES += \
     Eleven \
+    TSCalibration2 \
