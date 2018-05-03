@@ -82,8 +82,8 @@ PRC_COMPATIBILITY_PACKAGE := true
 ZIP_OPTIMIZATION_NO_INTEGRITY := true
 
 # LineageOS specific
-VER := 14.1-r1
+VER := 14.1-r2
 RELEASE_OS_TITLE := LineageOS
 BUILD_NAME_VARIANT := cm-x86
 INSTALL_PREFIX := cm-x86-$(VER)
-PREV_VERS := cm-x86-13.0-rc1 cm-x86-13.0-r1 cm-x86-14.1-rc1
+PREV_VERS := cm-x86-13.0-rc1 cm-x86-13.0-r1 cm-x86-14.1-rc1 cm-x86-14.1-r1
