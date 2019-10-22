@@ -7,6 +7,7 @@ TARGET_BOARD_PLATFORM := android-x86
 # Some framework code requires this to enable BT
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_LINUX := true
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/generic/common/bluetooth
 
 BOARD_USE_LEGACY_UI := true
 
@@ -30,7 +31,7 @@ TARGET_EXTRA_KERNEL_MODULES := tp_smapi
 ifneq ($(filter efi_img,$(MAKECMDGOALS)),)
 TARGET_KERNEL_ARCH ?= x86_64
 endif
-TARGET_USES_64_BIT_BINDER := $(if $(filter x86_64,$(TARGET_ARCH) $(TARGET_KERNEL_ARCH)),true)
+TARGET_USES_64_BIT_BINDER := true
 
 BOARD_USES_GENERIC_AUDIO ?= false
 BOARD_USES_ALSA_AUDIO ?= true

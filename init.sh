@@ -15,6 +15,13 @@ function set_prop_if_empty()
 	[ -z "$(getprop $1)" ] && set_property "$1" "$2"
 }
 
+function rmmod_if_exist()
+{
+	for m in $*; do
+		[ -d /sys/module/$m ] && rmmod $m
+	done
+}
+
 function init_misc()
 {
 	# device information
@@ -30,6 +37,27 @@ function init_misc()
 	# enable sdcardfs if /data is not mounted on tmpfs or 9p
 	mount | grep /data\ | grep -qE 'tmpfs|9p'
 	[ $? -ne 0 ] && modprobe sdcardfs
+
+	# remove wl if it's not used
+	local wifi
+	if [ -d /sys/class/net/wlan0 ]; then
+		wifi=$(basename `readlink /sys/class/net/wlan0/device/driver`)
+		[ "$wifi" != "wl" ] && rmmod_if_exist wl
+	fi
+
+	# enable virt_wifi if needed
+	local eth=`getprop net.virt_wifi eth0`
+	if [ -d /sys/class/net/$eth -a "$VIRT_WIFI" != "0" ]; then
+		if [ -n "$wifi" -a "$VIRT_WIFI" = "1" ]; then
+			rmmod_if_exist iwlmvm $wifi
+		fi
+		if [ ! -d /sys/class/net/wlan0 ]; then
+			ifconfig $eth down
+			ip link set $eth name wifi_eth
+			ifconfig wifi_eth up
+			ip link add link wifi_eth name wlan0 type virt_wifi
+		fi
+	fi
 }
 
 function init_hal_audio()
@@ -55,6 +83,9 @@ function init_hal_bluetooth()
 	done
 
 	case "$PRODUCT" in
+		T100TAF)
+			set_property bluetooth.interface hci1
+			;;
 		T10*TA|M80TA|HP*Omni*)
 			BTUART_PORT=/dev/ttyS1
 			set_property hal.bluetooth.uart.proto bcm
@@ -100,7 +131,14 @@ function init_hal_bluetooth()
 
 function init_hal_camera()
 {
-	return
+	case "$PRODUCT" in
+		e-tab*Pro)
+			set_prop_if_empty hal.camera.0 0,270
+			set_prop_if_empty hal.camera.2 1,90
+			;;
+		*)
+			;;
+	esac
 }
 
 function init_hal_gps()
@@ -115,10 +153,8 @@ function set_drm_mode()
 		ET1602*)
 			drm_mode=1366x768
 			;;
-		VMware*)
-			[ -n "$video" ] && drm_mode=$video
-			;;
 		*)
+			[ -n "$video" ] && drm_mode=$video
 			;;
 	esac
 
@@ -127,6 +163,8 @@ function set_drm_mode()
 
 function init_uvesafb()
 {
+	UVESA_MODE=${UVESA_MODE:-${video%@*}}
+
 	case "$PRODUCT" in
 		ET2002*)
 			UVESA_MODE=${UVESA_MODE:-1600x900}
@@ -145,6 +183,7 @@ function init_hal_gralloc()
 			if [ "$HWACCEL" != "0" ]; then
 				set_property ro.hardware.hwcomposer drm
 				set_property ro.hardware.gralloc gbm
+				set_property debug.drm.mode.force ${video:-1280x800}
 			fi
 			set_prop_if_empty sleep.state none
 			;;
@@ -185,6 +224,9 @@ function init_hal_power()
 	case "$PRODUCT" in
 		HP*Omni*|OEMB|Surface*3|T10*TA)
 			set_prop_if_empty sleep.state none
+			;;
+		e-tab*Pro)
+			set_prop_if_empty sleep.state force
 			;;
 		*)
 			;;
@@ -256,18 +298,27 @@ function init_hal_sensors()
 			modprobe hdaps
 			hal_sensors=hdaps
 			;;
+		*LINX1010B*)
+			set_property ro.iio.accel.z.opt_scale -1
+			;&
 		*i7Stylus*|*M80TA*)
 			set_property ro.iio.accel.x.opt_scale -1
 			;;
-		*ONDATablet*)
+		*LenovoMIIX320*|*ONDATablet*)
 			set_property ro.iio.accel.order 102
 			set_property ro.iio.accel.x.opt_scale -1
 			set_property ro.iio.accel.y.opt_scale -1
 			;;
+		*SP111-33*)
+			set_property ro.iio.accel.quirks no-trig
+			;&
 		*ST70416-6*)
 			set_property ro.iio.accel.order 102
 			;;
-		*T10*TA*)
+		*e-tabPro*|*pnEZpad*)
+			set_property ro.iio.accel.quirks no-trig
+			;&
+		*T*0*TA*)
 			set_property ro.iio.accel.y.opt_scale -1
 			;;
 		*)
@@ -284,11 +335,11 @@ function init_hal_sensors()
 		hal_sensors=hdaps
 		has_sensors=true
 	elif [ "$hal_sensors" != "kbd" ]; then
-		has_sensors=${HAS_SENSORS:-true}
+		has_sensors=true
 	fi
 
 	set_property ro.hardware.sensors $hal_sensors
-	set_property config.override_forced_orient $has_sensors
+	set_property config.override_forced_orient ${HAS_SENSORS:-$has_sensors}
 }
 
 function create_pointercal()
@@ -416,6 +467,12 @@ function do_bootcomplete()
 			setkeycodes 0xe012 158
 			setkeycodes 0x66 172
 			setkeycodes 0x6b 127
+			;;
+		Surface*Go)
+			echo on > /sys/devices/pci0000:00/0000:00:15.1/i2c_designware.1/power/control
+			;;
+		X80*Power)
+			set_property power.nonboot-cpu-off 1
 			;;
 		*)
 			;;
