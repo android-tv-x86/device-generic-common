@@ -62,6 +62,8 @@ function init_misc()
 
 function init_hal_audio()
 {
+CARD_ID=`cat /proc/asound/card0/id`
+
 	case "$PRODUCT" in
 		VirtualBox*|Bochs*)
 			[ -d /proc/asound/card0 ] || modprobe snd-sb16 isapnp=0 irq=5
@@ -70,6 +72,16 @@ function init_hal_audio()
 			set_prop_if_empty hal.audio.out pcmC0D2p
 			;;
 	esac
+
+  case "$CARD_ID" in
+      PCH) # Intel HD Audio
+              set_property hal.audio.default.hdmi true
+              set_property hal.audio.out PCMC0D3p
+              ;;
+      *)
+              # Do nothing. No idea about other cards until someone tells me
+              ;;
+  esac
 }
 
 function init_hal_bluetooth()
@@ -441,7 +453,7 @@ function do_init()
 	init_hal_power
 	init_hal_sensors
 	init_tscal
-	init_ril
+	#init_ril
 	post_init
 }
 
@@ -461,40 +473,6 @@ function do_bootcomplete()
 	lsmod | grep -Ehq "brcmfmac|rtl8723be" && setprop wlan.no-unload-driver 1
 
 	case "$PRODUCT" in
-		1866???|1867???|1869???) # ThinkPad X41 Tablet
-			start tablet-mode
-			start wacom-input
-			setkeycodes 0x6d 115
-			setkeycodes 0x6e 114
-			setkeycodes 0x69 28
-			setkeycodes 0x6b 158
-			setkeycodes 0x68 172
-			setkeycodes 0x6c 127
-			setkeycodes 0x67 217
-			;;
-		6363???|6364???|6366???) # ThinkPad X60 Tablet
-			;&
-		7762???|7763???|7767???) # ThinkPad X61 Tablet
-			start tablet-mode
-			start wacom-input
-			setkeycodes 0x6d 115
-			setkeycodes 0x6e 114
-			setkeycodes 0x69 28
-			setkeycodes 0x6b 158
-			setkeycodes 0x68 172
-			setkeycodes 0x6c 127
-			setkeycodes 0x67 217
-			;;
-		7448???|7449???|7450???|7453???) # ThinkPad X200 Tablet
-			start tablet-mode
-			start wacom-input
-			setkeycodes 0xe012 158
-			setkeycodes 0x66 172
-			setkeycodes 0x6b 127
-			;;
-		Surface*Go)
-			echo on > /sys/devices/pci0000:00/0000:00:15.1/i2c_designware.1/power/control
-			;;
 		VMware*)
 			pm disable com.android.bluetooth
 			;;

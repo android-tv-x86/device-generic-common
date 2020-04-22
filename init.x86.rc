@@ -83,16 +83,6 @@ service rtk_hciattach /vendor/bin/rtk_hciattach -n -s 115200 /dev/rtk_h5 rtk_h5
     oneshot
     seclabel u:r:bluetooth:s0
 
-service wacom-input /system/bin/wacom-input
-    disabled
-    oneshot
-    seclabel u:r:inputflinger:s0
-
-service tablet-mode /system/bin/tablet-mode
-    disabled
-    oneshot
-    seclabel u:r:inputflinger:s0
-
 service ctrl-alt-del /system/bin/input keyevent --longpress POWER
     disabled
     oneshot

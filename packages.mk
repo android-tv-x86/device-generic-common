@@ -18,12 +18,10 @@
 
 PRODUCT_PACKAGES := \
     AnalyticsService \
-    BasicSmsReceiver \
     Development \
     Galaxy4 \
     GlobalTime \
     HoloSpiralWallpaper \
-    Launcher3 \
     LiveWallpapers \
     LiveWallpapersPicker \
     MagicSmokeWallpapers \
@@ -57,9 +55,7 @@ PRODUCT_PACKAGES := \
     ssh \
     sshd \
     su \
-    tablet-mode \
     v86d \
-    wacom-input \
 
 PRODUCT_PACKAGES += \
     libwpa_client \
@@ -97,5 +93,4 @@ PRODUCT_PACKAGES += \
 
 # Third party apps
 PRODUCT_PACKAGES += \
-    Eleven \
     TSCalibration2 \
