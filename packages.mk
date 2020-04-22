@@ -91,6 +91,92 @@ PRODUCT_PACKAGES += \
     libffmpeg_omx \
     media_codecs_ffmpeg.xml
 
+PRODUCT_PACKAGES += \
+    FrameworkPackageStubs \
+    TvProvision \
+    TvSettings \
+
+# TV Input HAL
+PRODUCT_PACKAGES += \
+    android.hardware.tv.input@1.0-impl
+
+# HDMI CEC HAL
+PRODUCT_PACKAGES += \
+    android.hardware.tv.cec@1.0-impl
+
+# IMG graphics
+PRODUCT_PACKAGES += \
+    IMG_graphics \
+
+PRODUCT_PACKAGES += \
+    android.hardware.graphics.allocator@2.0-impl \
+    android.hardware.graphics.composer@2.1-impl \
+    android.hardware.graphics.mapper@2.0-impl
+
+# RenderScript HAL
+PRODUCT_PACKAGES += \
+    android.hardware.renderscript@1.0-impl
+
+# libva
+PRODUCT_PACKAGES += \
+    libva \
+    libva-android \
+    libva-tpi \
+    vainfo
+
+#libstagefrighthw
+PRODUCT_PACKAGES += \
+    libstagefrighthw
+
+# libmix
+PRODUCT_PACKAGES += \
+    libmixvbp_mpeg4 \
+    libmixvbp_h264 \
+    libmixvbp_h264secure \
+    libmixvbp_vc1 \
+    libmixvbp_vp8 \
+    libmixvbp_mpeg2 \
+    libmixvbp \
+    libva_videodecoder \
+    libva_videoencoder
+
+PRODUCT_PACKAGES += \
+    libwrs_omxil_common \
+    libwrs_omxil_core_pvwrapped \
+    libOMXVideoDecoderAVC \
+    libOMXVideoDecoderH263 \
+    libOMXVideoDecoderMPEG4 \
+    libOMXVideoDecoderWMV \
+    libOMXVideoDecoderVP8 \
+    libOMXVideoDecoderMPEG2 \
+    libOMXVideoDecoderVP9HWR \
+    libOMXVideoDecoderVP9Hybrid \
+    libOMXVideoEncoderAVC \
+    libOMXVideoEncoderH263 \
+    libOMXVideoEncoderMPEG4 \
+    libOMXVideoEncoderVP8
+
+#libISV
+PRODUCT_PACKAGES += libisv_omx_core
+
+# pvr
+PRODUCT_PACKAGES += \
+    libpvr2d
+
+# libdrm
+PRODUCT_PACKAGES += \
+    libdrm \
+    dristat \
+    drmstat
+
+# Memtrack HAL
+PRODUCT_PACKAGES += \
+    android.hardware.memtrack@1.0-impl
+
+# Power HAL
+PRODUCT_PACKAGES += \
+    android.hardware.power@1.0-impl \
+
 # Third party apps
 PRODUCT_PACKAGES += \
     TSCalibration2 \

@@ -16,11 +16,13 @@
 
 PRODUCT_DIR := $(dir $(lastword $(filter-out device/common/%,$(filter device/%,$(ALL_PRODUCTS)))))
 
+# Get TV things from the ATV package - Including overrides
+# Set this flag to avoid getting the Live Channels App
+USE_OEM_TV_APP := true
+
+$(call inherit-product,device/google/atv/products/atv_base.mk)
+
 PRODUCT_PROPERTY_OVERRIDES := \
-    ro.ril.hsxpa=1 \
-    ro.ril.gprsclass=10 \
-    keyguard.no_require_sim=true \
-    ro.com.android.dataroaming=true \
     media.sf.hwaccel=1 \
     media.sf.omx-plugin=libffmpeg_omx.so \
     media.sf.extractor-plugin=libffmpeg_extractor.so
@@ -46,6 +48,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/ppp/peers/gprs:system/etc/ppp/peers/gprs \
     $(LOCAL_PATH)/media_codecs.xml:system/etc/media_codecs.xml \
     $(LOCAL_PATH)/media_profiles.xml:system/etc/media_profiles.xml \
+    $(LOCAL_PATH)/permissions/tv_core_hardware.xml:system/etc/permissions/tv_core_hardware.xml \
     device/sample/etc/apns-full-conf.xml:system/etc/apns-conf.xml \
     device/sample/etc/old-apns-conf.xml:system/etc/old-apns-conf.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
@@ -81,11 +84,6 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_TAGS += dalvik.gc.type-precise
 
-PRODUCT_CHARACTERISTICS := tablet
-
-PRODUCT_AAPT_CONFIG := normal large xlarge mdpi hdpi
-PRODUCT_AAPT_PREF_CONFIG := mdpi
-
 DEVICE_PACKAGE_OVERLAYS := $(LOCAL_PATH)/overlay
 
 # Get Android 8.0 HIDL HALs
@@ -118,5 +116,7 @@ $(call inherit-product-if-exists,$(if $(wildcard vendor/google/products/gms.mk),
 
 # Get native bridge settings
 $(call inherit-product-if-exists,$(LOCAL_PATH)/nativebridge/nativebridge.mk)
+
+$(call inherit-product-if-exists,$(LOCAL_PATH)/product_property_overrides.mk)
 
 $(call inherit-product,$(if $(wildcard $(PRODUCT_DIR)packages.mk),$(PRODUCT_DIR),$(LOCAL_PATH)/)packages.mk)
